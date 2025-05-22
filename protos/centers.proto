@@ -1,0 +1,30 @@
+syntax = "proto2";
+
+import "features.proto";
+
+enum QuantizationScheme {
+  PRODUCT = 0;
+  STACKED = 1;
+  PRODUCT_AND_BIAS = 2;
+  PRODUCT_AND_PACK = 3;
+}
+
+message SerializedProjection {
+  repeated GenericFeatureVector rotation_vec = 1;
+
+  repeated int32 variable_dims_per_block = 2 [packed = true];
+
+  repeated float per_block_eigenvalue_sums = 3 [packed = true];
+}
+
+message CentersForAllSubspaces {
+  repeated CentersForSubspace subspace_centers = 1;
+  optional QuantizationScheme quantization_scheme = 2
+      [default = PRODUCT];
+
+  optional SerializedProjection serialized_projection = 3;
+}
+
+message CentersForSubspace {
+  repeated GenericFeatureVector center = 1;
+}
